@@ -2,7 +2,9 @@ package gomail
 
 import (
 	"bytes"
+	"fmt"
 	"io"
+	"net/mail"
 	"os"
 	"path/filepath"
 	"time"
@@ -121,8 +123,17 @@ func (m *Message) SetHeaders(h map[string][]string) {
 }
 
 // SetAddressHeader sets an address to the given header field.
-func (m *Message) SetAddressHeader(field, address, name string) {
-	m.header[field] = []string{m.FormatAddress(address, name)}
+func (m *Message) SetAddressHeader(field string, values ...string) error {
+	formattedAddresses := make([]string, len(values))
+	for i, val := range values {
+		address, err := mail.ParseAddress(val)
+		if err != nil {
+			return fmt.Errorf("gomail: invalid address %q: %v", val, err)
+		}
+		formattedAddresses[i] = address.String()
+	}
+	m.header[field] = formattedAddresses
+	return nil
 }
 
 // FormatAddress formats an address and a name as a valid RFC 5322 address.

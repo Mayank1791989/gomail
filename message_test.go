@@ -27,10 +27,10 @@ type message struct {
 
 func TestMessage(t *testing.T) {
 	m := NewMessage()
-	m.SetAddressHeader("From", "from@example.com", "Señor From")
+	m.SetAddressHeader("From", mail.Address{Address: "from@example.com", Name: "Señor From"})
 	m.SetHeader("To", m.FormatAddress("to@example.com", "Señor To"), "tobis@example.com")
-	m.SetAddressHeader("Cc", "cc@example.com", "A, B")
-	m.SetAddressHeader("X-To", "ccbis@example.com", "à, b")
+	m.SetAddressHeader("Cc", "A, B <cc@example.com>")
+	m.SetAddressHeader("X-To", "à, b <ccbis@example.com>"})
 	m.SetDateHeader("X-Date", now())
 	m.SetHeader("X-Date-2", m.FormatDate(now()))
 	m.SetHeader("Subject", "¡Hola, señor!")
